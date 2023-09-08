@@ -1,54 +1,77 @@
 import random
 
-def calcular_aptitud(individuo):
-    aptitud = sum([x**2 + 2 for x in individuo])
-    return aptitud
+def calculate_aptitud(individuo):
+  aptitud = sum([x**2 + 2 for x in individuo])
+  return aptitud
 
-def most_apt(arreglo):
-    apts = [calcular_aptitud(individuo) for individuo in arreglo]
-    better_index = apts.index(max(apts))
-    return arreglo[better_index], apts[better_index]
+def most_apt(array1):
+  apts = [calculate_aptitud(individuo) for individuo in array1]
+  better_index = apts.index(max(apts))
+  return array1[better_index]
 
 def cruza(padre1, padre2):
-    cross_point = random.randint(1, len(padre1))
-    hijo1 = padre1[:cross_point] + padre2[cross_point:]
-    hijo2 = padre2[:cross_point] + padre1[cross_point:]
-    return hijo1, hijo2
+  cross_point = random.randint(1, len(padre1))
+  hijo1 = padre1[:cross_point] + padre2[cross_point:]
+  hijo2 = padre2[:cross_point] + padre1[cross_point:]
+  return hijo1, hijo2
 
-poblacion = 30
+people = 30 # Ajustable
 bits = 1
-rango = range(1,16)
+range_num = range(1, 16)
 
-arreglo = [[random.choice(rango) for i in range(bits)] for i in range(poblacion)]
-arreglo_binario = [[format(num,'04b') for num in individuo] for individuo in arreglo]
+array1 = [[random.choice(range_num) for i in range(bits)] for i in range(people)]
+binary_array = [[format(num, '04b') for num in individuo] for individuo in array1]
 
-print(arreglo_binario)
+print("Población inicial:")
+for i, individuo in enumerate(binary_array, start=1):
+  print(f"Individuo {i}: {individuo}")
+
 print('\n')
 
-parent1_index = 0
-parent2_index = 1
+parent_index1 = 0
+parent_index2 = 1
 
-parent1 = arreglo[parent1_index]
-parent2 = arreglo[parent2_index]
+parent1 = array1[parent_index1]
+parent2 = array1[parent_index2]
 
 hijo1, hijo2 = cruza(parent1, parent2)
 
-arreglo[parent1_index] = hijo1
-arreglo[parent2_index] = hijo2
+array1[parent_index1] = hijo1
+array1[parent_index2] = hijo2
 
-for i, individuo in enumerate(arreglo, start = 1):
-    aptitud_individual = calcular_aptitud(individuo)
-    print(f'Aptitud del individuo {i}: {aptitud_individual}')
+for i, individuo in enumerate(array1, start = 1):
+  individual_aptitud = calculate_aptitud(individuo)
+  print(f'Aptitud del individuo {i}: {individual_aptitud}')
 
 print('\n')
 
-individuo, aptitud = most_apt(arreglo)
-print('Aptitud del individuo con mejor aptitud: ', individuo)
-print('Con una aptitud de: ', aptitud)
+individuo_mas_apto = most_apt(array1)
+print('El individuo más apto tiene un:', individuo_mas_apto)
 
-print('Padre 1: ', parent1)
-print('Padre 2; ', parent2)
-print('Hijo 1: ', hijo1)
-print('Hijo 2: ', hijo2)
-arreglo_binario = [[format(num,'04b') for num in individuo] for individuo in arreglo]
-print('Arreglo despues de la cruza: ', arreglo_binario)
+print('\n')
+
+# Realiza la cruza entre todos los padres
+num_padres = len(array1)
+
+for i in range(num_padres):
+  for j in range(i + 1, num_padres):
+    padre1 = array1[i]
+    padre2 = array1[j]
+    
+    hijo1, hijo2 = cruza(padre1, padre2)
+    
+    # Reemplazar a los padres con sus hijos en el array1
+    array1[i] = hijo1
+    array1[j] = hijo2
+
+# Convierte el arreglo a representación binaria
+arreglo_binario = [[format(num, '04b') for num in individuo] for individuo in array1]
+
+# Encuentra el individuo más apto después de la cruza
+individuo_mas_apto = most_apt(array1)
+
+print("Arreglo después de la cruza:")
+for i, individuo in enumerate(arreglo_binario, start=1):
+  print(f"Individuo {i}: {individuo}")
+
+print("El individuo más apto tiene un:", individuo_mas_apto)
